@@ -3,8 +3,28 @@ Simple solution to play with telnet routers in Python3.6+, with convenient scrip
 
 Usage:
 
-Check out examples and documentation.
-Check ciscopy.config for useful global variables. You can change them before importing ciscopy.networking.
+    from ciscopy.networking import Router, Network
+    from ciscopy.utils import save_output_to_file
+    
+    telnet_ip = "aa.bb.cc.dd"
+    telnet_port1 = "abcde"
+    telnet_port2 = "edcba"
+    
+    R1 = Router(telnet_ip, telnet_port1, name='R1')
+    R2 = Router(telnet_ip, telnet_port2, name='R2')
+    
+    net = Network(routers=[R1, R2])
+    
+    for router in net.routers:
+        router.send_command("copy running-config startup-config")
+        router.send_enter()
+        
+        with router.config():
+            ...
+
+Check out examples and documentation (@TODO) for more.
+
+See also ciscopy.config for useful global variables. You can change them before importing ciscopy.networking.
 - DRY_RUN, default False - if True, sends nothing, shows what would be done. 
 Creates fake telnet connection which will show all executed commands
 - SHOW_DRY_TELNET_LOGS, default True - if False, less informative, but more readable dry runs
@@ -14,7 +34,7 @@ Creates fake telnet connection which will show all executed commands
 
 
 Note:
-Project works best if you have the telnet sessions open in side terminal to check if everything goes smooth.
+Project works best if you have interesting telnet sessions opened in side terminal to check online if everything goes smooth.
 
 TODO:
 - documentation
