@@ -18,7 +18,7 @@ class Interface:
     def config(self):
         self.router.send_command('config t')
         self.router.send_command(f'interface {self.name}')
-        yield
+        yield self.router
         self.router.send_command('exit')
         self.router.send_command('exit')
 
@@ -120,7 +120,7 @@ class Router:
     @contextmanager
     def config(self):
         self.send_command('config t')
-        yield
+        yield self
         self.send_command('exit')
 
     def __lt__(self, other):
@@ -131,7 +131,7 @@ class Router:
             self._telnet.close()
             self._telnet = None
 
-    def __str__(self):
+    def __repr__(self):
         return f"{self.name} @ {self._telnet_addr}"
 
 
@@ -165,7 +165,13 @@ class Network:
 
     @property
     def routers(self):
+        """Return list of routers in network"""
         return self._routers.values()
+
+    @property
+    def routers_dict(self):
+        """Return dict of routers in network, key is name"""
+        return self._routers.copy()
 
     @property
     def connections(self):
